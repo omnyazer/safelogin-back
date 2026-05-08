@@ -1,17 +1,14 @@
 package com.safelogin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
-    private List<User> users = new ArrayList<>();
+    private UserRepository userRepository;
 
-    public UserService() {
-        users.add(new User("admin", "1234"));
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public boolean register(String username, String password) {
@@ -19,23 +16,25 @@ public class UserService {
             return false;
         }
 
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                return false;
-            }
+        User existingUser = userRepository.findByUsername(username);
+
+        if (existingUser != null) {
+            return false;
         }
 
-        users.add(new User(username, password));
+        User newUser = new User(username, password);
+        userRepository.save(newUser);
+
         return true;
     }
 
     public boolean login(String username, String password) {
-        for (User user : users) {
-            if (user.getUsername().equals(username) && user.checkPassword(password)) {
-                return true;
-            }
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            return false;
         }
 
-        return false;
+        return user.checkPassword(password);
     }
 }
