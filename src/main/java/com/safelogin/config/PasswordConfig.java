@@ -1,4 +1,4 @@
-package com.safelogin;
+package com.safelogin.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

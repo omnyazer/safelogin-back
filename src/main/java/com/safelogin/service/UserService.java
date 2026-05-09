@@ -1,7 +1,12 @@
-package com.safelogin;
+package com.safelogin.service;
+
+import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.safelogin.entity.User;
+import com.safelogin.repository.UserRepository;
 
 @Service
 public class UserService {
@@ -15,12 +20,8 @@ public class UserService {
     }
 
     public boolean register(String username, String password) {
-        if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
-            return false;
-        }
-
-        User existingUser = userRepository.findByUsername(username);
-        if (existingUser != null) {
+        Optional<User> existingUser = userRepository.findByUsername(username);
+        if (existingUser.isPresent()) {
             return false;
         }
 
@@ -31,16 +32,18 @@ public class UserService {
         return true;
     }
 
-    public boolean login(String username, String password) {
-        if (username == null || password == null) {
-            return false;
+    public Optional<User> authenticate(String username, String password) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isEmpty()) {
+            return Optional.empty();
         }
 
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            return false;
+        User user = userOptional.get();
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            return Optional.empty();
         }
 
-        return passwordEncoder.matches(password, user.getPassword());
+        return Optional.of(user);
     }
 }

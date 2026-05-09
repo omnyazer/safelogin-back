@@ -1,14 +1,18 @@
-package com.safelogin;
+package com.safelogin.controller;
 
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.safelogin.dto.AuthResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,6 +34,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new AuthResponse(false, "Corps de requête invalide."));
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<AuthResponse> handleAuthenticationException() {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new AuthResponse(false, "Authentification requise."));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<AuthResponse> handleAccessDeniedException() {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new AuthResponse(false, "Accès refusé."));
     }
 
     @ExceptionHandler(Exception.class)

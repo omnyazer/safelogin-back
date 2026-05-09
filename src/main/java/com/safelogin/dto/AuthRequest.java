@@ -1,4 +1,4 @@
-package com.safelogin;
+package com.safelogin.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
