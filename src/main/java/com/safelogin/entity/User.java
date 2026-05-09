@@ -3,6 +3,8 @@ package com.safelogin.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,12 +23,16 @@ public class User {
     @JsonIgnore
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
     public User() {
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, UserRole role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     public Long getId() {
@@ -39,5 +45,17 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }

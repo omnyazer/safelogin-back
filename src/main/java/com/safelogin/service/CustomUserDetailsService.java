@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.safelogin.entity.User;
+import com.safelogin.entity.UserRole;
 import com.safelogin.repository.UserRepository;
 
 @Service
@@ -22,10 +23,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable."));
 
+        UserRole role = user.getRole() == null ? UserRole.USER : user.getRole();
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
-                .roles("USER")
+                .roles(role.name())
                 .build();
     }
 }

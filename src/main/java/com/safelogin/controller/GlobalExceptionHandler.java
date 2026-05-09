@@ -1,6 +1,7 @@
 package com.safelogin.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new AuthResponse(false, "Corps de requête invalide."));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<AuthResponse> handleIllegalArgument(IllegalArgumentException exception) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new AuthResponse(false, exception.getMessage()));
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<AuthResponse> handleNoSuchElement(NoSuchElementException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new AuthResponse(false, exception.getMessage()));
     }
 
     @ExceptionHandler(AuthenticationException.class)
