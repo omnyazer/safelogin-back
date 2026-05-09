@@ -1,5 +1,6 @@
 package com.safelogin;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +14,8 @@ public class User {
     private Long id;
 
     private String username;
+
+    @JsonIgnore
     private String password;
 
     public User() {
@@ -29,10 +32,6 @@ public class User {
 
     public String getUsername() {
         return username;
-    }
-
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
     }
 
     public String getPassword() {
